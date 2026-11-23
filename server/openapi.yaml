@@ -1,0 +1,121 @@
+openapi: 3.0.3
+servers:
+  - url: http
+
+info:
+  title: backend services for Survey management system
+  version: 1.0.0
+
+paths: 
+  /surveys:
+    post:
+      summary: 'create a survey'
+      operationId: 'createSurvey'
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createSurvey"
+      
+      responses:
+        "201":
+          description: "survey created successfully"
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/successResponse"
+
+        "400":
+          description: "Bad request"
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/exceptionResoponse" 
+      
+
+
+components:
+  schemas:
+    exceptionResoponse:
+      type: object
+      properties: 
+        code : 
+          type: number
+          example: 404
+
+    successResponse:
+      type: object
+      properties: 
+        success:
+          type: boolean
+          example: true
+        
+        message: 
+          type: string
+          example: survey created successfully
+
+    createSurvey:
+      type: object
+      required:
+        - title
+        - activation_date
+        - expiration_date
+        - is_activated
+      properties: 
+        title : 
+          type: string
+          example: "My Survey"
+
+        activation_date:
+          type: string
+          format: timestamp
+          example: 1970-01-01T00:00:00.000Z
+
+        expiration_date:
+          type: string
+          format: timestamp
+          example: 1970-01-01T00:00:00.000Z
+        
+        is_activated:
+          type : boolean
+          example: false
+        
+        questions:
+          type: array
+          items: 
+            $ref: "#/components/schemas/questions"
+              
+    questions:
+      type: object
+      required:
+        - title
+        - question_type
+      properties: 
+        title :
+          type: string
+          example: "what is your name"
+
+        question_type:
+          type: string
+          enum: [mcq, rating, text]
+
+        is_required:
+          type: boolean
+          example: false
+
+        rating_options:
+          type: object
+          properties: 
+            min:
+              type: integer
+              example: 1
+            max:
+              type: integer
+              example: 5
+
+        mcq_options:
+          type: array
+          items: 
+            type: string
+

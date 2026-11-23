@@ -1,0 +1,12 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: nest-server
+    restart: unless-stopped
+    env_file:
+      -./development.env
+      -.env
+    environments:
+        WATCHPACK_POLLING: "true"

@@ -1,0 +1,59 @@
+services:
+  nest-app:
+    build: 
+      context: .
+      dockerfile: DockerFile.production
+    image: nest-server
+    ports:
+      - "3001:3001"
+
+    volumes:
+      - backend_node_modules:/app/node_modules
+      - .:/app
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - grey-network
+  db:
+    image: postgres:17-alpine
+    ports:
+      - "5433:5432"
+    container_name: nest-postgres
+    env_file:
+      - path: './.env'
+        required: true
+
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - grey-network
+ 
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: nest-pgadmin
+    restart : unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL : admin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - grey-network
+
+networks:
+  grey-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  backend_node_modules:
