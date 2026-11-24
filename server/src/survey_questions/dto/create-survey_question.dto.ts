@@ -57,8 +57,7 @@ class QuestionDto{
     @IsOptional()
     @IsArray()
     @ArrayMinSize(1)
-    @ValidateNested({each: true})
-    @Type(() => String)
+    @IsString({each : true})
     mcq_options : string[]
 
 }

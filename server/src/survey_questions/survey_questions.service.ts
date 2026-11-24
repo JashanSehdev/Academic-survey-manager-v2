@@ -33,7 +33,7 @@ export class SurveyQuestionsService extends BaseService<SurveyQuestion> {
     const questionOptionRepo = this.datasource.getRepository(QuestionOption);
     const questionRatingRepo = this.datasource.getRepository(QuestionRating);
 
-    const survey = surveyRepo.create({...survey_data, created_by: '552fbb4c-77b0-4d46-8e3e-b88ca2ef3841'});
+    const survey = surveyRepo.create({...survey_data, created_by: '337d05f7-7949-41e1-a7ff-82c71c2f92be'});
 
     const saved_survey = await surveyRepo.save(survey); // bug is here
 
@@ -55,21 +55,27 @@ export class SurveyQuestionsService extends BaseService<SurveyQuestion> {
           question : q.title,
           message : 'MCQ required options'
         })
-
         const options = q.mcq_options.map((o) => (questionOptionRepo.create({survey_question_id: savedSurveyQuestion.id, title: o})))
+
 
         await questionOptionRepo.save(options);
 
       }
 
+
+      console.log("options -- saved")
       if (q.question_type === EQuestionType.RATING) {
+        console.log("survey_rating begin")
         const rating = questionRatingRepo.create({
           survey_question_id : savedSurveyQuestion.id,
           min : q.rating_options.min,
           max : q.rating_options.max
         })
 
-        await questionOptionRepo.save(rating);
+        console.log("rating: ",rating)
+
+        await questionRatingRepo.save(rating);
+        console.log("survey rating -- end")
       }
     }
 

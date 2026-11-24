@@ -6,7 +6,7 @@ services:
       container_name: nest-app
       restart: unless-stopped
       env_file:
-        - ./.development.env
+        - ./.env.development.local
       environment:
         WATCHPACK_POLLING: "true"
       ports:

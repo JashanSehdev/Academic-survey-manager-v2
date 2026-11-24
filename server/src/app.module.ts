@@ -13,6 +13,8 @@ import { ResponsesModule } from './responses/responses.module.js';
 import { ResponseOptionsModule } from './response_options/response_options.module.js';
 import { addTransactionalDataSource, getDataSourceByName } from 'typeorm-transactional';
 import { DataSource } from 'typeorm';
+import { AuthModule } from './auth/auth.module.js';
+import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 
 @Module({
   imports: [UsersModule,
@@ -43,6 +45,17 @@ import { DataSource } from 'typeorm';
     },
 
     }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      global : true,
+      useFactory: (configService: ConfigService): JwtModuleOptions => ({
+        secret: configService.getOrThrow<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: configService.get<number>('JWT_EXPIRES_IN') ?? '1000',
+        },
+      }),
+    }),
     SurveyModule,
     QuestionsModule,
     SurveyQuestionsModule,
@@ -50,6 +63,7 @@ import { DataSource } from 'typeorm';
     QuestionRatingsModule,
     ResponsesModule,
     ResponseOptionsModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

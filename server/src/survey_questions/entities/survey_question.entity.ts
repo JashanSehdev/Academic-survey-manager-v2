@@ -5,6 +5,7 @@ import { Survey } from "../../survey/entities/survey.entity.js";
 import { Question } from "../../questions/entities/question.entity.js";
 import { Response } from "../../responses/entities/response.entity.js";
 import { BaseEntity } from "../../common/entity/base.entity.js";
+import { QuestionRating } from "../../question_ratings/entities/question_rating.entity.js";
 
 @Entity('survey_questions')
 @Unique(['survey_id', 'question_id'])
@@ -35,5 +36,8 @@ export class SurveyQuestion extends BaseEntity{
 
     @OneToMany(() => Response, (res) => res.Question)
     Responses : Relation<Response[]>
+
+    @OneToMany(()=>QuestionRating, (qr) => qr.SurveyQuestion)
+    RatingOptions : Relation<QuestionRating[]>
 
 }
