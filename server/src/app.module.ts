@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestMiddleware, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { UsersModule } from './users/users.module.js';
@@ -15,6 +15,7 @@ import { addTransactionalDataSource, getDataSourceByName } from 'typeorm-transac
 import { DataSource } from 'typeorm';
 import { AuthModule } from './auth/auth.module.js';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
+import { AuthMiddleware } from './middleware/auth.middleware.js';
 
 @Module({
   imports: [UsersModule,
@@ -52,7 +53,7 @@ import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
       useFactory: (configService: ConfigService): JwtModuleOptions => ({
         secret: configService.getOrThrow<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: configService.get<number>('JWT_EXPIRES_IN') ?? '1000',
+          expiresIn: configService.get<number>('JWT_EXPIRES_IN') ?? 1000*60*60*24, // by default it expiration set for 1 day
         },
       }),
     }),
@@ -68,4 +69,18 @@ import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule{
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .exclude(
+        { path : 'auth/logout', method : RequestMethod.GET},
+        { path : 'auth/register', method : RequestMethod.POST},
+        { path : 'auth/login/admin', method : RequestMethod.POST},
+        { path : 'auth/login/student', method : RequestMethod.POST}
+      )
+      .forRoutes ('*')
+      
+  }
+}
