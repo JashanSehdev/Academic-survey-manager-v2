@@ -6,7 +6,7 @@ interface controlFieldProp<T extends FieldValues> {
   name: Path<T>;
   label?: string;
   placeholder?: string;
-  type ?: "email" | "text" | "password";
+  type ?: "email" | "text" | "password" | "datetime-local"
 }
 
 export default function ControlField<T extends FieldValues>({

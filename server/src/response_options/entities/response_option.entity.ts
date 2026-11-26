@@ -2,22 +2,23 @@ import { Column, Entity, JoinColumn, ManyToOne,OneToOne,type Relation } from "ty
 import { BaseEntity } from "../../common/entity/base.entity.js";
 import { Response } from "../../responses/entities/response.entity.js";
 import { QuestionOption } from "../../question_options/entities/question_option.entity.js";
+import { Answer } from "../../answers/entities/answer.entity.js";
 
 
-@Entity('response_options')
-export class ResponseOption extends BaseEntity {
+@Entity('answer_options')
+export class AnswerOption extends BaseEntity {
 
     @Column({type : 'uuid'})
-    response_id : string
+    answer_id : string
 
     @Column({type : 'uuid'})
     question_option_id : string
 
-    @OneToOne(() => Response, (res)=> res.Option)
-    @JoinColumn({name : 'response_id'})
-    Response : Relation<Response>
+    @OneToOne(() => Answer, (ans)=> ans.SelectedOption)
+    @JoinColumn({name : 'answer_id'})
+    Answer : Relation<Answer>
 
-    @OneToOne(() => QuestionOption, (qo)=> qo.Responses)
+    @OneToOne(() => QuestionOption, (qo)=> qo.AnswerSelected)
     @JoinColumn({name : 'question_option_id'})
     Option : Relation<QuestionOption>
 

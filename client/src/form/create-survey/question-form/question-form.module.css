@@ -1,0 +1,10 @@
+
+.individualQuestionContainer{
+    position: relative !important;
+}
+
+.removeQuestionButton{
+    position: absolute !important;
+    bottom: 1 !important;
+    right: 1 !important;
+}

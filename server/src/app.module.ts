@@ -16,6 +16,7 @@ import { DataSource } from 'typeorm';
 import { AuthModule } from './auth/auth.module.js';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { AuthMiddleware } from './middleware/auth.middleware.js';
+import { AnswersModule } from './answers/answers.module.js';
 
 @Module({
   imports: [UsersModule,
@@ -64,7 +65,8 @@ import { AuthMiddleware } from './middleware/auth.middleware.js';
     QuestionRatingsModule,
     ResponsesModule,
     ResponseOptionsModule,
-    AuthModule
+    AuthModule,
+    AnswersModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -17,7 +17,7 @@ export class User extends BaseEntity {
     @Column({type : 'varchar'})
     hashed_password : string
 
-    @Column({type : 'enum', enum : EProgram})
+    @Column({type : 'enum', enum : EProgram, nullable: true})
     program : EProgram
 
     @Column({type : 'varchar'})

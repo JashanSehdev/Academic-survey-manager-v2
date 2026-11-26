@@ -1,64 +1,79 @@
-import { ArrayMinSize, IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
-import { Type } from "class-transformer";
-import { EQuestionType } from "../../survey_questions/enum/question-type.enum.js";
+import {
+  ArrayMinSize,
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateIf,
+  ValidateNested,
+} from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { EQuestionType } from '../../survey_questions/enum/question-type.enum.js';
 
 export class CreateSurveyDto {
+  @IsString()
+  title: string;
 
-    @IsString()
-    title : string
+  @IsOptional()
+  @IsString()
+  description: string;
 
-    @IsOptional()
-    @IsString()
-    description : string
+  @IsString()
+  activation_date: string;
 
-    @IsString()
-    activation_date : string
+  @IsString()
+  expiration_date: string;
 
-    @IsString()
-    expiration_date : string
+  @IsOptional()
+  @IsBoolean()
+  is_activated: boolean;
 
-    @IsOptional()
-    @IsBoolean()
-    is_activated : boolean
-
-    @IsArray()
-    @ArrayMinSize(1)
-    @ValidateNested({each: true})
-    @Type(() =>  QuestionDto)
-    questions : QuestionDto[]
-
+  @IsArray()
+  @ArrayMinSize(1)
+  @ValidateNested({ each: true })
+  @Type(() => QuestionDto)
+  questions: QuestionDto[];
 }
 
-class RatingDto{
-    @IsNumber()
-    min : number
+class RatingDto {
+  @IsNumber()
+  min: number;
 
-    @IsNumber()
-    max : number
+  @IsNumber()
+  max: number;
 }
 
+class QuestionDto {
+  @IsString()
+  title: string;
 
-class QuestionDto{
-    
-    @IsString()
-    title : string
+  @IsEnum(EQuestionType)
+  question_type: EQuestionType;
 
-    @IsEnum(EQuestionType)
-    question_type : EQuestionType
+  @IsBoolean()
+  @IsNotEmpty()
+  is_mandatory: boolean;
 
-    @IsBoolean()
-    @IsNotEmpty()
-    is_mandatory : boolean
+  @IsOptional()
+  @Type(() => RatingDto)
+  rating_options: RatingDto;
 
-    @IsOptional()
-    @Type(() => RatingDto)
-    rating_options : RatingDto
-
-    @IsOptional()
-    @IsArray()
-    @ArrayMinSize(1)
-    @IsString({each : true})
-    mcq_options : string[]
-
+  @ValidateIf((o) => o.question_type === EQuestionType.MCQ)
+  @Transform(({ value }) =>
+    Array.isArray(value)
+      ? value.filter((option) => option !== null).map((option) => option.value)
+      : value,
+  )
+  @IsArray()
+  @ArrayMinSize(2)
+  @IsString({ each: true })
+  mcq_options?: string[];
 }
 
+class McqOptionsDto {
+  @IsString()
+  value: string;
+}

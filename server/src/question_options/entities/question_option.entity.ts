@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, Unique, type Relation } from "typeorm";
 import { BaseEntity } from "../../common/entity/base.entity.js";
 import { SurveyQuestion } from "../../survey_questions/entities/survey_question.entity.js";
-import { ResponseOption } from "../../response_options/entities/response_option.entity.js";
+import { AnswerOption } from "../../response_options/entities/response_option.entity.js";
 
 @Entity('question_options')
 @Unique(['survey_question_id', 'title'])
@@ -18,7 +18,7 @@ export class QuestionOption extends BaseEntity {
     Question: Relation<SurveyQuestion>
 
 
-    @OneToOne(() => ResponseOption, (ro) => ro.Option)
-    Responses : Relation<Response>
+    @OneToOne(() => AnswerOption, (ro) => ro.Option)
+    AnswerSelected : Relation<AnswerOption>
 
 }

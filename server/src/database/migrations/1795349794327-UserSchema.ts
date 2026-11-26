@@ -33,6 +33,7 @@ export class UserSchema1795349794327 implements MigrationInterface {
             name: 'program',
             type: 'enum',
             enum : ['btech', 'mtech'],
+            isNullable : true
           },
           {
             name: 'hashed_password',

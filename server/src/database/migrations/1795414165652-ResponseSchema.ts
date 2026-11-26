@@ -15,19 +15,13 @@ export class ResponseSchema1795414165652 implements MigrationInterface {
                     type: 'uuid',
                   },
                   {
-                    name: 'survey_question_id',
+                    name: 'survey_id',
                     type: 'uuid',
                   },
                   {
                     name: 'user_id',
                     type: 'uuid',
                   },
-                  {
-                    name: 'answer',
-                    type: 'text',
-                    isNullable : true
-                  },
-        
                   {
                     name: 'created_at',
                     type: 'timestamp',
@@ -41,10 +35,10 @@ export class ResponseSchema1795414165652 implements MigrationInterface {
                 ],
                 foreignKeys: [
                   {
-                    name: 'fk_survey_question_id',
-                    columnNames: ['survey_question_id'],
+                    name: 'fk_survey_response',
+                    columnNames: ['survey_id'],
                     referencedColumnNames: ['id'],
-                    referencedTableName: 'survey_questions',
+                    referencedTableName: 'surveys',
                   },
                   {
                     name: 'fk_respondend_id',
