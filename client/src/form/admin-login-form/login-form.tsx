@@ -5,11 +5,12 @@ import { AdminLoginInput, adminLoginSchema } from "./login-form.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ControlField from "@/components/form-components/control-field";
 import { Button, Stack, Typography } from "@mui/material";
-import { useAppDispatch } from "@/features/store";
+import { useAppDispatch, useAppSelector } from "@/features/store";
 import { adminLoginAsync } from "@/features/auth/handle-auth/admin-auth.actions";
 import { useRouter } from "next/navigation";
 
 export default function AdminLoginForm() {
+  const {loading} = useAppSelector((state) => state.auth)
   const router = useRouter()
   const dispatch = useAppDispatch()
   const { control, handleSubmit } = useForm<AdminLoginInput>({
@@ -47,7 +48,7 @@ export default function AdminLoginForm() {
           type = "password"
         />
       </Stack>
-      <Button variant="contained" sx={{margin: 2}} type="submit">
+      <Button loading={loading} variant="contained" sx={{margin: 2}} type="submit">
         Login
       </Button>
     </form>

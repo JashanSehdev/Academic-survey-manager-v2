@@ -1,10 +1,10 @@
 import 'dotenv'
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
-import { LoggerInterceptors } from './interceptors/loggerInterceptors.js';
 import { ValidationPipe } from '@nestjs/common';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import cookieParser from 'cookie-parser'
+import { ResponseInterceptor } from './interceptors/response.interceptors.js';
 
 async function bootstrap() {
   initializeTransactionalContext();
@@ -15,7 +15,7 @@ async function bootstrap() {
     origin : process.env.CLIENT_URL ?? 'http://localhost:3000', //TODO: make the environment variables working
     credentials : true
   })
-  app.useGlobalInterceptors(new LoggerInterceptors()); 
+  app.useGlobalInterceptors(new ResponseInterceptor()); 
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
 

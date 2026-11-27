@@ -21,6 +21,11 @@ export class SurveySchema1795352181418 implements MigrationInterface {
                 
                                     },
                                     {
+                                        name : 'program',
+                                        type : 'enum',
+                                        enum : ['btech', 'mtech']
+                                    },
+                                    {
                                         name : 'description',
                                         type : 'text',
                                         isNullable : true

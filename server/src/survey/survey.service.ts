@@ -1,7 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Search } from '@nestjs/common';
 import { CreateSurveyDto } from './dto/create-survey.dto.js';
 import { UpdateSurveyDto } from './dto/update-survey.dto.js';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { Survey } from './entities/survey.entity.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transactional } from 'typeorm-transactional';
@@ -11,6 +11,9 @@ import { Question } from '../questions/entities/question.entity.js';
 import { QuestionOption } from '../question_options/entities/question_option.entity.js';
 import { QuestionRating } from '../question_ratings/entities/question_rating.entity.js';
 import { SurveyQuestion } from '../survey_questions/entities/survey_question.entity.js';
+import { FilterDto } from './dto/filter-survey.dto.js';
+import { User } from '../users/entities/user.entity.js';
+import { EProgram } from '../users/enum/program.enum.js';
 
 @Injectable()
 export class SurveyService extends BaseService<Survey> {
@@ -18,7 +21,7 @@ export class SurveyService extends BaseService<Survey> {
   constructor( 
       private readonly datasource : DataSource,
       @InjectRepository(Survey)
-      private readonly surveyQuestionRepository : Repository<Survey>
+      private readonly surveyQuestionRepository : Repository<Survey>,
     ){
       super(surveyQuestionRepository)
     }
@@ -43,13 +46,13 @@ export class SurveyService extends BaseService<Survey> {
       for(const q of questions) {
   
         let saved_question = await questionRepo.findOneBy({title : q.title});
-        
+        minimum
         if (!saved_question) {
           const question = questionRepo.create({title: q.title});
           saved_question = await questionRepo.save(question);
         }
   
-        const surveyQuestion =  surveyQuestionRepo.create({question_id: saved_question.id, question_type: q.question_type, survey_id : saved_survey.id})
+        const surveyQuestion =  surveyQuestiominimumnRepo.create({question_id: saved_question.id, question_type: q.question_type, survey_id : saved_survey.id})
         const savedSurveyQuestion = await surveyQuestionRepo.save(surveyQuestion)
         if (q.question_type === EQuestionType.MCQ) {
           // if mcq have no options
@@ -87,5 +90,36 @@ export class SurveyService extends BaseService<Survey> {
       }
   
   
+    }
+
+    async findProgramSurveys(filter : FilterDto, program : string) {
+
+      const {page, limit} = filter
+
+      const skip = (page - 1) * limit
+
+      if (!(Object.values(EProgram) as string[]).includes(program)){
+        throw new BadRequestException('user must enroll in a program')
+      }
+      
+      const where : FindOptionsWhere<Survey>[]  = [{
+        program : program as EProgram
+      }]
+
+      if (filter.search) {
+        where[0].title = ILike(`%${filter.search}%`)
+        where.push({
+          description : ILike(`%${Search}%`)
+        })
+      }
+
+
+      return this.surveyQuestionRepository.find({
+        where,
+        skip,
+        take : limit
+      })
+
+
     }
 }

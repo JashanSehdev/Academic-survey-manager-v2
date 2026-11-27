@@ -1,5 +1,5 @@
 'use client'
-import { Box, Button, FormHelperText, Paper, Stack } from "@mui/material";
+import { Box, Button, FormHelperText, Stack } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { createSurveySchema, CreateSurveyInput } from "./create-survey.type";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,18 +8,19 @@ import { QuestionForm } from "./question-form/question-form";
 import { EQuestionType } from "@/enum/question.enum";
 import { useAppDispatch } from "@/features/store";
 import { createSurveyAsync } from "@/features/survey/handle-survey/survey.action";
-import { error } from "console";
+import { AdminAuth } from "@/providers/admin-auth";
 
 
-export default function CreateSurveyForm () {
+function CreateSurveyForm () {
 
     const dispatch = useAppDispatch()
 
-    const {control, handleSubmit, formState} = useForm<CreateSurveyInput>({
+    const {control, handleSubmit, formState, watch} = useForm<CreateSurveyInput>({
         resolver: zodResolver(createSurveySchema),
         defaultValues:{
             title : "",
             description : "",
+            program : "",
             activation_date :  Date.now.toString(),
             expiration_date : Date.now.toString(),
             is_activated : false,
@@ -34,7 +35,7 @@ export default function CreateSurveyForm () {
         }
     })
 
-    
+    console.log(watch())
     const onSubmit : SubmitHandler<CreateSurveyInput> = (data) => {
         dispatch(createSurveyAsync(data))
     }
@@ -65,3 +66,5 @@ export default function CreateSurveyForm () {
         
     )
 }
+
+export default AdminAuth(CreateSurveyForm)

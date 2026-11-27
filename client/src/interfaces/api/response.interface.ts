@@ -1,5 +1,5 @@
 export interface BaseApiresponse {
-    success : true,
+    statusCode : true,
     message : string
 }
 

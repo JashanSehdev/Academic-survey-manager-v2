@@ -8,7 +8,7 @@ export default function SnackbarProvider ({
 
 
     return (
-        <SnackBar>
+        <SnackBar autoHideDuration={1500}>
             {children}
         </SnackBar>
     )

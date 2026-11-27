@@ -9,7 +9,7 @@ export default function Providers({ children }: { children: ReactNode }) {
     <>
       <StoreProvider>
         <AppRouterCacheProvider>
-          <SnackbarProvider>{children}</SnackbarProvider>
+          <SnackbarProvider >{children}</SnackbarProvider>
         </AppRouterCacheProvider>
       </StoreProvider>
     </>
